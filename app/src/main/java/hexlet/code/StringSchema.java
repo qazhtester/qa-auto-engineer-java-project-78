@@ -1,12 +1,11 @@
 package hexlet.code;
 
-public final class StringSchema {
-    private boolean required;
+public final class StringSchema extends BaseSchema<String> {
     private int minLength;
     private String contains;
 
-    public StringSchema required(boolean required) {
-        this.required = required;
+    public StringSchema required(boolean isRequired) {
+        setRequired(isRequired);
         return this;
     }
 
@@ -20,16 +19,22 @@ public final class StringSchema {
         return this;
     }
 
-    public boolean isValid(String s) {
-        boolean requiredCheckResult = checkRequired(s);
-        boolean minLengthCheckResult = checkMinLen(s);
-        boolean containsCheckResult = checkContains(s);
+    @Override
+    public boolean isValid(String value) {
+        boolean requiredCheckResult = checkRequired(value);
+
+        if (value == null) {
+            return requiredCheckResult;
+        }
+
+        boolean minLengthCheckResult = checkMinLen(value);
+        boolean containsCheckResult = checkContains(value);
 
         return requiredCheckResult && minLengthCheckResult && containsCheckResult;
     }
 
     private boolean checkRequired(String string) {
-        return !required || string != null && !string.isEmpty();
+        return !isRequired() || string != null && !string.isEmpty();
     }
 
     private boolean checkMinLen(String s) {
