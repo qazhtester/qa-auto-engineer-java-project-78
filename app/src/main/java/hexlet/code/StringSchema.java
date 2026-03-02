@@ -1,47 +1,23 @@
 package hexlet.code;
 
 public final class StringSchema extends BaseSchema<String> {
-    private int minLength;
-    private String contains;
 
-    public StringSchema required(boolean isRequired) {
-        setRequired(isRequired);
+    public StringSchema required() {
+        addRule("required", value -> !isNullOrEmpty(value));
         return this;
     }
 
-    public StringSchema minLength(int len) {
-        this.minLength = len;
+    public StringSchema minLength(int minLength) {
+        addRule("minLength", value -> isNullOrEmpty(value) || value.length() >= minLength);
         return this;
     }
 
     public StringSchema contains(String substring) {
-        this.contains = substring;
+        addRule("contains", value -> isNullOrEmpty(value) || value.contains(substring));
         return this;
     }
 
-    @Override
-    public boolean isValid(String value) {
-        boolean requiredCheckResult = checkRequired(value);
-
-        if (value == null) {
-            return requiredCheckResult;
-        }
-
-        boolean minLengthCheckResult = checkMinLen(value);
-        boolean containsCheckResult = checkContains(value);
-
-        return requiredCheckResult && minLengthCheckResult && containsCheckResult;
-    }
-
-    private boolean checkRequired(String string) {
-        return !isRequired() || string != null && !string.isEmpty();
-    }
-
-    private boolean checkMinLen(String s) {
-        return s.length() >= minLength;
-    }
-
-    private boolean checkContains(String s) {
-        return s.contains(contains);
+    private boolean isNullOrEmpty(String value) {
+        return value == null || value.isEmpty();
     }
 }

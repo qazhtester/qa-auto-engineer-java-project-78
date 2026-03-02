@@ -2,79 +2,88 @@ package hexlet.code;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+
+import java.util.HashMap;
+import java.util.Map;
 
 class ValidatorTest {
 
-    @ParameterizedTest
-    @ValueSource(strings = {"Zhanna", "Zhe", "anZh"})
-    void validatorTestValidString(String s) {
-        final int minLen = 3;
+    @Test
+    void stringValidatorTest() {
+        String validString = "validString";
+        String substring = "valid";
+        String invalidString = "testSubstring";
+        int minLen = validString.length();
 
-        Validator validator = new Validator();
-        StringSchema stringSchema = validator
+        StringSchema stringSchema = new Validator()
                 .string()
-                .contains("Zh")
-                .required(true)
-                .minLength(minLen);
+                .minLength(minLen)
+                .contains(invalidString)
+                .contains(substring);
+        Assertions.assertTrue(stringSchema.isValid(null));
+        Assertions.assertTrue(stringSchema.isValid(""));
 
-        boolean result = stringSchema.isValid(s);
-        Assertions.assertTrue(result);
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {"", "Zh", "zhzh"})
-    void validatorTestInvalidString(String s) {
-        final int minLen = 3;
-
-        Validator validator = new Validator();
-        StringSchema stringSchema = validator
-                .string()
-                .contains("Zh")
-                .required(true)
-                .minLength(minLen);
-
-        boolean result = stringSchema.isValid(s);
-        Assertions.assertFalse(result);
+        stringSchema.required();
+        Assertions.assertFalse(stringSchema.isValid(null));
+        Assertions.assertFalse(stringSchema.isValid(""));
+        Assertions.assertFalse(stringSchema.isValid(substring));
+        Assertions.assertFalse(stringSchema.isValid(invalidString));
+        Assertions.assertTrue(stringSchema.isValid(validString));
     }
 
     @Test
     void validatorTestValidInteger() {
         final int from = 5;
         final int to = 10;
+        final int zero = 0;
+        final int one = 1;
+        final int negative = -1;
 
-        Validator validator = new Validator();
-        NumberSchema stringSchema = validator
-                .number()
-                .positive(true)
-                .range(from, to);
+        NumberSchema numberSchema = new Validator().number();
+        Assertions.assertTrue(numberSchema.isValid(negative));
 
-        boolean result1 = stringSchema.isValid(from);
-        boolean result2 = stringSchema.isValid(to);
+        numberSchema.positive();
+        Assertions.assertTrue(numberSchema.isValid(null));
 
-        Assertions.assertTrue(result1);
-        Assertions.assertTrue(result2);
+        numberSchema.required();
+        Assertions.assertFalse(numberSchema.isValid(null));
+        Assertions.assertFalse(numberSchema.isValid(zero));
+        Assertions.assertTrue(numberSchema.isValid(one));
+
+        numberSchema.range(zero, one).range(from, to);
+        Assertions.assertFalse(numberSchema.isValid(from - one));
+        Assertions.assertFalse(numberSchema.isValid(to + one));
+        Assertions.assertTrue(numberSchema.isValid(from));
+        Assertions.assertTrue(numberSchema.isValid(to));
     }
 
     @Test
-    void validatorTestInvalidInteger() {
-        final int from = -5;
-        final int to = 0;
-
+    void validatorTestValidMapString() {
+        final int size = 2;
         Validator validator = new Validator();
-        NumberSchema numberSchema = validator
-                .number()
-                .required(true)
-                .positive(true)
-                .range(from, to);
+        Map<String, BaseSchema<String>> schemas = new HashMap<>();
+        schemas.put("firstName", validator.string().required().contains("Ivan"));
 
-        boolean result1 = numberSchema.isValid(from);
-        boolean result2 = numberSchema.isValid(null);
-        boolean result3 = numberSchema.isValid(to + 1);
+        MapSchema mapSchema = validator.map().shape(schemas);
+        Assertions.assertTrue(mapSchema.isValid(null));
 
-        Assertions.assertFalse(result1);
-        Assertions.assertFalse(result2);
-        Assertions.assertFalse(result3);
+        mapSchema.required();
+        Assertions.assertFalse(mapSchema.isValid(null));
+
+        Map<String, String> humanMap = new HashMap<>();
+        Assertions.assertFalse(mapSchema.isValid(humanMap));
+
+        humanMap.put("firstName", "Ivan");
+        Assertions.assertTrue(mapSchema.isValid(humanMap));
+
+        mapSchema.sizeOf(size);
+        Assertions.assertFalse(mapSchema.isValid(humanMap));
+
+        humanMap.put("lastName", null);
+        Assertions.assertTrue(mapSchema.isValid(humanMap));
+
+        schemas.put("lastName", validator.string().required());
+        mapSchema.shape(schemas);
+        Assertions.assertFalse(mapSchema.isValid(humanMap));
     }
 }
