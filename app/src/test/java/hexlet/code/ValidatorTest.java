@@ -65,10 +65,10 @@ class ValidatorTest {
     void validatorTestValidMapString() {
         final int size = 2;
         Validator validator = new Validator();
-        Map<String, BaseSchema<String>> schemas = new HashMap<>();
-        schemas.put("firstName", validator.string().required().contains("Ivan"));
+        Map<String, BaseSchema<String>> stringSchemas = new HashMap<>();
+        stringSchemas.put("firstName", validator.string().required().contains("Ivan"));
 
-        MapSchema mapSchema = validator.map().shape(schemas);
+        MapSchema mapSchema = validator.map().shape(stringSchemas);
         Assertions.assertTrue(mapSchema.isValid(null));
 
         mapSchema.required();
@@ -80,14 +80,14 @@ class ValidatorTest {
         humanMap.put("firstName", "Ivan");
         Assertions.assertTrue(mapSchema.isValid(humanMap));
 
-        mapSchema.sizeOf(size);
+        mapSchema.sizeof(size);
         Assertions.assertFalse(mapSchema.isValid(humanMap));
 
         humanMap.put("lastName", null);
         Assertions.assertTrue(mapSchema.isValid(humanMap));
 
-        schemas.put("lastName", validator.string().required());
-        mapSchema.shape(schemas);
+        stringSchemas.put("lastName", validator.string().required());
+        mapSchema.shape(stringSchemas);
         Assertions.assertFalse(mapSchema.isValid(humanMap));
     }
 }
