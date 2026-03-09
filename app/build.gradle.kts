@@ -1,5 +1,5 @@
 plugins {
-    id("application")
+    id("java")
     id("com.github.ben-manes.versions") version "0.53.0"
     id("jacoco")
     id("org.sonarqube") version "6.3.1.5724"
@@ -11,10 +11,6 @@ version = "1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
-}
-
-application {
-    mainClass = "hexlet.code.App"
 }
 
 dependencies {

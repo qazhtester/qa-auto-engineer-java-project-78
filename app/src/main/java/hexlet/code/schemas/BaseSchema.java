@@ -1,11 +1,11 @@
 package hexlet.code.schemas;
 
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Predicate;
 
 public abstract class BaseSchema<T> {
-    private final Map<Object, Predicate<T>> rules = new LinkedHashMap<>();
+    private final Map<Object, Predicate<T>> rules = new HashMap<>();
 
     protected final void addRule(Object name, Predicate<T> rule) {
         rules.put(name, rule);
