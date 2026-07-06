@@ -26,9 +26,11 @@ jobs:
           cache: 'gradle'
 
       - name: Make gradle wrapper executable
-        run: cd app && chmod +x ./gradlew
+        working-directory: app
+        run: chmod +x ./gradlew
 
       - name: Run SpotBugs Analysis
+        working-directory: app
         run: ./gradlew compileJava spotbugsMain --continue
 
       - name: Upload SpotBugs SARIF Report
