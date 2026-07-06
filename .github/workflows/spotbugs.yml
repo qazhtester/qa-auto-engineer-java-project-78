@@ -29,7 +29,7 @@ jobs:
         run: cd app && chmod +x ./gradlew
 
       - name: Run SpotBugs Analysis
-        run: ./gradlew spotbugsMain --continue
+        run: ./gradlew compileJava spotbugsMain --continue
 
       - name: Upload SpotBugs SARIF Report
         uses: github/codeql-action/upload-sarif@v4
