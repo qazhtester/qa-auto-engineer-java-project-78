@@ -38,3 +38,14 @@ spotbugs {
     effort.set(com.github.spotbugs.snom.Effort.DEFAULT)
     reportLevel.set(com.github.spotbugs.snom.Confidence.MEDIUM)
 }
+
+tasks.withType<com.github.spotbugs.snom.SpotBugsTask> {
+    val sarifReport = reports.create("sarif")
+
+    sarifReport.apply {
+        required.set(true)
+        outputLocation.set(layout.buildDirectory.file("reports/spotbugs/main.sarif"))
+    }
+}
+
+
