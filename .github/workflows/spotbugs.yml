@@ -26,7 +26,7 @@ jobs:
           cache: 'gradle'
 
       - name: Make gradle wrapper executable
-        run: chmod +x ./gradlew
+        run: cd app && chmod +x ./gradlew
 
       - name: Run SpotBugs Analysis
         run: ./gradlew spotbugsMain --continue
