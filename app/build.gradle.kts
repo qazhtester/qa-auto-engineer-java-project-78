@@ -1,8 +1,10 @@
+import com.github.spotbugs.snom.assign
+
 plugins {
     id("java")
     id("com.github.ben-manes.versions") version "0.53.0"
     id("jacoco")
-    id("org.sonarqube") version "6.3.1.5724"
+    id("com.github.spotbugs") version "6.5.8"
     checkstyle
 }
 
@@ -30,9 +32,9 @@ tasks.jacocoTestReport {
     }
 }
 
-sonar {
-    properties {
-        property("sonar.projectKey", "qazhtester_qa-auto-engineer-java-project-78")
-        property("sonar.organization", "qazhtester")
-    }
+spotbugs {
+    toolVersion.set("4.8.6")
+    ignoreFailures.set(false)
+    effort.set(com.github.spotbugs.snom.Effort.DEFAULT)
+    reportLevel.set(com.github.spotbugs.snom.Confidence.MEDIUM)
 }
