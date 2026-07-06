@@ -38,4 +38,4 @@ jobs:
 
         if: always()
         with:
-          sarif_file: build/reports/spotbugs/main.sarif
+          sarif_file: app/build/reports/spotbugs/main.sarif
